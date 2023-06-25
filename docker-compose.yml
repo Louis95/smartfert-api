@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgis/postgis:13-3.1-alpine
+    container_name: smartfert_db
+    restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=smartfert
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=smartfert
+      - POSTGRES_HOST=db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", 'smartfert' ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+        sh -c "
+               python manage.py db upgrade && python manage.py run && python manage.py seed
+               "
+    environment:
+      - POSTGRES_DB=smartfert
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=smartfert
+      - POSTGRES_HOST=db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: pytest
+    environment:
+      - POSTGRES_DB=smartfert
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=smartfert
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+volumes:
+      pg_data:
