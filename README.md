@@ -161,3 +161,16 @@ To use the API, you can use the sample user credentials from the seed_database.p
 
 ![api endpoints](smartfert.png)
 
+## Add a new user.
+
+To add a new user, you can use the [register endpoint](http://127.0.0.1:3000/register).
+Here is a sample payload.
+
+```shell
+{
+  "first_name": "Test",
+  "last_name": "User",
+  "username": "exampleuser@gmail.com",
+  "password": "1234567",
+}
+```

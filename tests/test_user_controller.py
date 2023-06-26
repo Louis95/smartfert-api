@@ -44,10 +44,10 @@ def test_create_user_missing_data(client):
     assert 'Input payload validation failed' in response.json['message']
 
 
-def test_user_login_success(client):
+def test_user_login_success(client, create_test_user):
     user_data = {
-        "username": "testuser@example.com",
-        "password": "password123"
+        "username": "user@example.com",
+        "password": "123456789"
     }
     response = client.post('/login/', json=user_data)
     assert response.status_code == 200
