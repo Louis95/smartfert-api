@@ -1,0 +1,219 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+        "/farm/": {
+            "get": {
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "200": {
+                        "description": "Successfully fetch fertilizers."
+                    }
+                },
+                "summary": "Get Farm data",
+                "operationId": "Fetch Farm data",
+                "tags": [
+                    "Farm"
+                ]
+            }
+        },
+        "/fertilizer/{farm_id}": {
+            "parameters": [
+                {
+                    "name": "farm_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "401": {
+                        "description": "Not Authorized."
+                    },
+                    "200": {
+                        "description": "Successfully fetch fertilizers."
+                    }
+                },
+                "summary": "Get a fertilizer by the farm ID, for a given date",
+                "description": "If no date is provided, it defaults to the current date",
+                "operationId": "Get Fertilizer data",
+                "parameters": [
+                    {
+                        "example": "2022-01-01",
+                        "in": "query",
+                        "description": "The date to query data for, defaults to today",
+                        "name": "date",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "fertilizers"
+                ]
+            }
+        },
+        "/login/": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "summary": "Login a user",
+                "description": "This endpoint allows users to log in by providing their login credentials.\n\nPayload:\n- email (string): Email address of the user.\n- password (string): Password for the user's account.\n\nReturns:\n- 200: Login successful.\n- 401: Unauthorized access, either the provided credentials are incorrect or the user is not authorized.\n- 400: Missing or invalid JSON in the request.",
+                "operationId": "User login",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/UserAuth"
+                        }
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "responses": {
+                    "400": {
+                        "description": "User already exist"
+                    },
+                    "201": {
+                        "description": "User successfully created."
+                    }
+                },
+                "summary": "Register a new user",
+                "description": "This endpoint allows users to register a new account by providing the required information.\n\nPayload:\n- first_name (string): First name of the user.\n- last_name (string): Last name of the user.\n- email (string): Email address of the user.\n- password (string): Password for the user's account.\n- username (string): Username for the user's account.\n\nReturns:\n- 201: User successfully created with token.",
+                "operationId": "New user registration",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/UserModel"
+                        }
+                    }
+                ],
+                "tags": [
+                    "users"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "SmartFert 3000",
+        "version": "1.0",
+        "description": "API for interview Test"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "Bearer Token": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization"
+        }
+    },
+    "security": [
+        {
+            "Bearer Token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "users",
+            "description": "user related operations"
+        },
+        {
+            "name": "fertilizers",
+            "description": "fertilizer related operations"
+        },
+        {
+            "name": "Farm",
+            "description": "farm related operations"
+        }
+    ],
+    "definitions": {
+        "UserModel": {
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "first_name": {
+                    "type": "string",
+                    "description": "user first name"
+                },
+                "last_name": {
+                    "type": "string",
+                    "description": "user last name"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "User email"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            },
+            "discriminator": "username",
+            "type": "object"
+        },
+        "UserAuth": {
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "The username used for authentication"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "The password used for authentication"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "responses": {
+        "ParseError": {
+            "description": "When a mask can't be parsed"
+        },
+        "MaskError": {
+            "description": "When any error occurs on mask"
+        }
+    }
+}
